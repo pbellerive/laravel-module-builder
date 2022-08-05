@@ -1,0 +1,29 @@
+{
+    "name": "laravue3/laravel-module-builder",
+    "description": "Create module in laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Patrick Bellerive",
+            "email": "p.bellerive@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Laravue3\\ModuleBuilder\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravue3\\ModuleBuilder\\ModuleBuilderServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "orchestra/testbench": "^7.0",
+        "nunomaduro/collision": "^6.1"
+    }
+}
