@@ -1,6 +1,7 @@
 <?php
 
-namespace ModuleBuilder;
+namespace Laravue3\ModuleBuilder;
+
 
 use Illuminate\Support\ServiceProvider;
 
