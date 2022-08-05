@@ -28,6 +28,10 @@ class ModuleBuilderServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                    ModuleBuilder::class,
+                ]);
+        }
     }
 }

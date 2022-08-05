@@ -125,7 +125,8 @@ class ModuleBuilder extends Command
 
         @mkdir($fullPath);
 
-        $stubFileContent = $this->disk->get('./ModuleBuilder/stubs/factory.stub');
+        $stubFileContent = \File::get(__DIR__ . '/stubs/factory.stub');
+
         $stubFileContent = str_replace(
             ['{{ namespace }}', '{{ class }}', '{{ classNamespace }}'],
             ['Database\\Factories\\' . $this->pluralName, $this->moduleName, $fullClassNamespace],
@@ -227,7 +228,8 @@ class ModuleBuilder extends Command
     }
 
     public function createFile($type, $needles, $replacements, $filename = null) {
-        $stubFileContent = $this->disk->get('./ModuleBuilder/stubs/'. $type .'.stub');
+        $stubFileContent = \File::get(__DIR__ . '/stubs/'. $type .'.stub');
+
         $stubFileContent = str_replace(
             $needles,
             $replacements,
