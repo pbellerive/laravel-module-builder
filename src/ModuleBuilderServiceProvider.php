@@ -5,7 +5,7 @@ namespace Laravue3\ModuleBuilder;
 
 use Illuminate\Support\ServiceProvider;
 
-class ModuleBuilderProvider extends ServiceProvider
+class ModuleBuilderServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -15,7 +15,7 @@ class ModuleBuilderProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-             __DIR__.'/../ModuleBuilder/config.php',
+             __DIR__.'/config.php',
             'moduleBuilder'
         );
 
