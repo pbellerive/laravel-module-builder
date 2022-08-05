@@ -194,7 +194,7 @@ class ModuleBuilder extends Command
 
     public function createSeeder()
     {
-        $directory = $this->fullPath . '/Seeders';
+        $directory = $this->fullPath . '/seeders';
         @mkdir($directory);
 
         $path = $directory . '/' . $this->moduleName . 'Seeder.php';
