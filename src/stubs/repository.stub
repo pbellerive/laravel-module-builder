@@ -12,7 +12,7 @@ class {{ class }}
         $obj->save();
     }
 
-    public function get($options)
+    public function get($options=[])
     {
         $obj =  {{ model }}::query();
 

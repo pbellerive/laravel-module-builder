@@ -117,7 +117,7 @@ class ModuleBuilder extends Command
 
     public function createControllerApi()
     {
-        $this->createFile('controller', ['{{ namespace }}', '{{ class }}'],['App\\' . $this->pluralName, $this->moduleName . 'Controller']);
+        $this->createFile('controller', ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],['App\\' . $this->pluralName, $this->moduleName . 'Controller', $this->moduleName, $this->moduleNameLower]);
     }
 
     public function createFactory()

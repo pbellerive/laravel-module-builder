@@ -14,7 +14,7 @@ class {{ class }} extends Controller
      */
     public function index()
     {
-        //
+         return new {{ model }}ResourceCollection($this->{{ model }}Repository->get());
     }
 
     /**
@@ -25,7 +25,10 @@ class {{ class }} extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', {{ model }}::class);
+
+        $params = $request->all();
+        $this->{{ model }}Repository->create($params);
     }
 
     /**
@@ -34,7 +37,7 @@ class {{ class }} extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show({{ model }} ${{ modelParam }})
     {
         //
     }
@@ -46,9 +49,12 @@ class {{ class }} extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, {{ model }} ${{ modelParam }})
     {
-        //
+        $this->authorize('update', ${{ modelParam }});
+
+        $params = $request->all();
+        $this->{{ model }}Repository->create($params);
     }
 
     /**
@@ -57,7 +63,7 @@ class {{ class }} extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy({{ model }} ${{ modelParam }})
     {
         //
     }
