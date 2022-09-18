@@ -24,6 +24,7 @@ class ModuleBuilder extends Command
     protected $description = 'Create a new module and its related files';
 
     protected $moduleName;
+    protected $moduleNameLower;
     protected $pluralName;
     protected $fullpath;
     protected $disk;
@@ -47,6 +48,7 @@ class ModuleBuilder extends Command
     public function handle()
     {
         $this->moduleName = trim($this->argument('name'));
+        $this->moduleNameLower = Str::lower(trim($this->argument('name')));
         $this->pluralName = Str::plural($this->moduleName);
 
         $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
@@ -161,7 +163,7 @@ class ModuleBuilder extends Command
 
     public function createRepository()
     {
-        $this->createFile('repository', ['{{ namespace }}', '{{ class }}'],['App\\' . $this->pluralName, $this->moduleName . 'Repository']);
+        $this->createFile('repository', ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],['App\\' . $this->pluralName, $this->moduleName . 'Repository', $this->moduleName, $this->moduleNameLower]);
     }
 
     public function createPolicy()

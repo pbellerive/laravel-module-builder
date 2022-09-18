@@ -4,4 +4,26 @@ namespace {{ namespace }};
 
 class {{ class }}
 {
+    public function create($params)
+    {
+        $obj = new {{ model }}($params);
+        //$obj->owner_id = \Auth::id();
+
+        $obj->save();
+    }
+
+    public function get($options)
+    {
+        $obj =  {{ model }}::query();
+
+        $per_page = array_key_exists('per_page', $options) ? $options['per_page'] : 10;
+
+        return $obj->orderBy('created_at', 'desc')->paginate($per_page);
+    }
+
+    public function update(${{ modelParam }}, $params)
+    {
+        ${{ modelParam }}->fill($params);
+        ${{ modelParam }}->save();
+    }
 }
