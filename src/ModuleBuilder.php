@@ -61,7 +61,7 @@ class ModuleBuilder extends Command
         @mkdir($this->fullPath);
 
         $this->createProvider();
-
+        
         if ($this->option('all')) {
             $this->input->setOption('factory', true);
             // $this->input->setOption('seed', true);
@@ -75,44 +75,59 @@ class ModuleBuilder extends Command
             $this->input->setOption('viewjs', true);
         }
 
-        if ($this->option('controller')) {
-            $this->createControllerApi();
-        }
+        $helper = new Helpers(trim($this->argument('name')));
 
-        if ($this->option('factory')) {
-            $this->createFactory();
-        }
+        if ($this->option('json')) {
+            print($this->option('json'));
+            $helper->buildFromJson($this->option('json'));
+        } else {
+            $helper->buildFromOptions($this->options());
+            return 0;
+        //     if ($this->option('controller')) {
+        //         $this->createControllerApi();
+        //     }
+    
+        //     if ($this->option('factory')) {
+        //         $this->createFactory();
+        //     }
+    
+        //     if ($this->option('migration')) {
+        //         $this->createMigration();
+        //     }
+    
+        //     if ($this->option('model')) {
+        //         $this->createModel();
+        //     }
+    
+        //     if ($this->option('policy')) {
+        //         $this->createPolicy();
+        //     }
+    
+        //     if ($this->option('repository')) {
+        //         $this->createRepository();
+        //     }
+    
+        //     if ($this->option('resource')) {
+        //         $this->createResource();
+        //     }
+    
+    
+        //     if ($this->option('seed')) {
+        //         $this->createSeeder();
+        //     }
+    
+        //     if ($this->option('viewjs')) {
+        //         $this->createVuejsModule();
+        //     }
+        // }
+       
 
-        if ($this->option('migration')) {
-            $this->createMigration();
-        }
+        // return 0;
+    }
 
-        if ($this->option('model')) {
-            $this->createModel();
-        }
+    public function buildFromJson() 
+    {
 
-        if ($this->option('policy')) {
-            $this->createPolicy();
-        }
-
-        if ($this->option('repository')) {
-            $this->createRepository();
-        }
-
-        if ($this->option('resource')) {
-            $this->createResource();
-        }
-
-
-        if ($this->option('seed')) {
-            $this->createSeeder();
-        }
-
-        if ($this->option('viewjs')) {
-            $this->createVuejsModule();
-        }
-
-        return 0;
     }
 
     public function createControllerApi()
@@ -258,6 +273,7 @@ class ModuleBuilder extends Command
             ['controller', 'c', InputOption::VALUE_NONE, 'Create a new controller for the model'],
             ['factory', 'f', InputOption::VALUE_NONE, 'Create a new factory for the model'],
             ['force', null, InputOption::VALUE_NONE, 'Create the class even if the model already exists'],
+            ['json', null, InputOption::VALUE_REQUIRED, 'Create based on json description'],
             ['migration', 'm', InputOption::VALUE_NONE, 'Create a new migration file for the model'],
             ['model', 'M', InputOption::VALUE_NONE, 'Create a new model file '],
             ['policy', null, InputOption::VALUE_NONE, 'Create a new policy for the model'],
