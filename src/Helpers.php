@@ -15,6 +15,8 @@ class Helpers
         $this->pluralName = Str::plural($this->moduleName);
 
         $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
+
+        $this->createProvider();
     }
 
     public function buildFromJson($jsonPath)
@@ -30,8 +32,17 @@ class Helpers
             $this->moduleName = $name;
             $this->moduleNameLower = Str::lower($name);
             $this->pluralName = Str::plural($this->moduleName);
-    
             $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
+
+            $config = [
+                'name' => $name,
+                'moduleName' => $this->moduleName,
+                'moduleNameLower' =>  $this->moduleNameLower,
+                'pluralName' => $this->pluralName,
+                'fullPath' => $this->fullPath,
+                'disk' => $this->disk,
+                'model' => $model
+            ];
 
             $this->createControllerApi();
             $this->createFactory();
@@ -40,51 +51,52 @@ class Helpers
             $this->createProvider();
             $this->createPolicy();
             $this->createRepository();
-            $this->createModel();
-            $this->createMigration();
+
+           
+            ModelBuilder::build($config);            
+            MigrationBuilder::build($config);
         }
     }
 
     public function buildFromOptions($options) 
     {
         var_dump($options);
-        if ($this->option('controller')) {
+        if (array_key_exists('controller', $options)) {
             $this->createControllerApi();
         }
 
-        if ($this->option('factory')) {
+        if (array_key_exists('factory', $options)) {
             $this->createFactory();
         }
 
-        if ($this->option('migration')) {
+        if (array_key_exists('migration', $options)) {
             $this->createMigration();
         }
 
-        if ($this->option('model')) {
+        if (array_key_exists('model', $options)) {
             $this->createModel();
         }
 
-        if ($this->option('policy')) {
+        if (array_key_exists('policy', $options)) {
             $this->createPolicy();
         }
 
-        if ($this->option('repository')) {
+        if (array_key_exists('repository', $options)) {
             $this->createRepository();
         }
 
-        if ($this->option('resource')) {
+        if (array_key_exists('resource', $options)) {
             $this->createResource();
         }
 
 
-        if ($this->option('seed')) {
+        if (array_key_exists('seed', $options)) {
             $this->createSeeder();
         }
 
-        if ($this->option('viewjs')) {
+        if (array_key_exists('viewjs', $options)) {
             $this->createVuejsModule();
         }
-    }
 
     }
 
@@ -111,28 +123,28 @@ class Helpers
         $this->disk->put($fullPath . '/' . $filename, $stubFileContent);
     }
 
-    public function createMigration()
-    {
-        $name = Str::snake($this->moduleName);
+    // public function createMigration()
+    // {
+    //     $name = Str::snake($this->moduleName);
 
-        $path = '/migrations/' . $this->getDatePrefix() .'_create_' . $name.'.php';
+    //     $path = '/migrations/' . $this->getDatePrefix() .'_create_' . $name.'.php';
 
-        @mkdir($this->fullPath . '/migrations');
-        $this->createFile(
-            'migration.create',
-            ['{{ namespace }}', '{{ table }}'],
-            ['App\\' . $this->pluralName, Str::lower($this->pluralName)],
-            $this->fullPath . '/' . $path);
-    }
+    //     @mkdir($this->fullPath . '/migrations');
+    //     $this->createFile(
+    //         'migration.create',
+    //         ['{{ namespace }}', '{{ table }}'],
+    //         ['App\\' . $this->pluralName, Str::lower($this->pluralName)],
+    //         $this->fullPath . '/' . $path);
+    // }
 
-    public function createModel()
-    {
-        $this->createFile(
-            'model',
-            ['{{ namespace }}', '{{ class }}'],
-            ['App\\' . $this->pluralName, $this->moduleName],
-            $this->fullPath . '/' . $this->moduleName . '.php');
-    }
+    // public function createModel($fillable='')
+    // {
+    //     $this->createFile(
+    //         'model',
+    //         ['{{ namespace }}', '{{ class }}', '{{ fillable }}'],
+    //         ['App\\' . $this->pluralName, $this->moduleName, $fillable],
+    //         $this->fullPath . '/' . $this->moduleName . '.php');
+    // }
 
     public function createRepository()
     {
@@ -179,6 +191,26 @@ class Helpers
             ['{{ class }}', '{{ namespace }}'],
             [$this->moduleName, $this->pluralName],
             $path);
+    }
+
+    function createVuejsModule()
+    {
+        $path = config('moduleBuilder.viewjs') . '/' . Str::lower($this->pluralName);
+        @mkdir($path);
+
+        $this->createFile(
+            'list',
+            ['{{ class }}'],
+            [Str::lower($this->moduleName)],
+            $path . '/list.vue'
+        );
+
+        $this->createFile(
+            'edit',
+            ['{{ class }}'],
+            [Str::lower($this->moduleName)],
+            $path . '/edit.vue'
+        );
     }
 
     public function createFile($type, $needles, $replacements, $filename = null) {
