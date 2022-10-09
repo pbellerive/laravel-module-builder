@@ -7,6 +7,7 @@ use Symfony\Component\VarDumper\VarDumper;
 abstract class Builder 
 {
     public abstract static function build($config);
+    protected abstract static function buildFields($model);
 
     public static function createFile($type, $needles, $replacements, $filename = null, $config) {
         $stubFileContent = \File::get(__DIR__ . '/stubs/'. $type .'.stub');

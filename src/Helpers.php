@@ -3,6 +3,14 @@ namespace Laravue3\ModuleBuilder;
 
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
+use Laravue3\ModuleBuilder\Builders\ResourceBuilder;
+use Laravue3\ModuleBuilder\Builders\ModelBuilder;
+use Laravue3\ModuleBuilder\Builders\ControllerBuilder;
+use Laravue3\ModuleBuilder\Builders\FactoryBuilder;
+use Laravue3\ModuleBuilder\Builders\MigrationBuilder;
+use Laravue3\ModuleBuilder\Builders\PolicyBuilder;
+use Laravue3\ModuleBuilder\Builders\ProviderBuilder;
+use Laravue3\ModuleBuilder\Builders\RepositoryBuilder;
 
 class Helpers 
 {
@@ -16,7 +24,6 @@ class Helpers
 
         $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
 
-        $this->createProvider();
     }
 
     public function buildFromJson($jsonPath)
@@ -28,31 +35,15 @@ class Helpers
         $content = json_decode($jsonContent, true);
 
         foreach($content as $model) {
-            $name = trim($model['name']);
-            $this->moduleName = $name;
-            $this->moduleNameLower = Str::lower($name);
-            $this->pluralName = Str::plural($this->moduleName);
-            $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
+            $config = $this->getConfig($model);
 
-            $config = [
-                'name' => $name,
-                'moduleName' => $this->moduleName,
-                'moduleNameLower' =>  $this->moduleNameLower,
-                'pluralName' => $this->pluralName,
-                'fullPath' => $this->fullPath,
-                'disk' => $this->disk,
-                'model' => $model
-            ];
-
-            $this->createControllerApi();
-            $this->createFactory();
             $this->createSeeder();
-            $this->createResource();
-            $this->createProvider();
-            $this->createPolicy();
-            $this->createRepository();
-
-           
+            ResourceBuilder::build($config);
+            FactoryBuilder::build($config);
+            PolicyBuilder::build($config);
+            RepositoryBuilder::build($config);
+            ControllerBuilder::build($config);
+            ProviderBuilder::build($config);            
             ModelBuilder::build($config);            
             MigrationBuilder::build($config);
         }
@@ -100,98 +91,40 @@ class Helpers
 
     }
 
-    public function createControllerApi()
+    public function getConfig($model) 
     {
-        $this->createFile('controller', ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],['App\\' . $this->pluralName, $this->moduleName . 'Controller', $this->moduleName, $this->moduleNameLower]);
+        $name = trim($model['name']);
+        $this->moduleName = $name;
+        $this->moduleNameLower = Str::lower($name);
+        $this->pluralName = Str::plural($this->moduleName);
+        $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
+
+        $config = [
+            'name' => $name,
+            'moduleName' => $this->moduleName,
+            'moduleNameLower' =>  $this->moduleNameLower,
+            'pluralName' => $this->pluralName,
+            'fullPath' => $this->fullPath,
+            'disk' => $this->disk,
+            'model' => $model
+        ];
+
+        return $config;
     }
 
-    public function createFactory()
-    {
-        $fullClassNamespace = '\\App\\' . $this->pluralName . '\\' . $this->moduleName . '::class';
-        $fullPath = config('moduleBuilder.factoriesPath') . '/' . $this->pluralName;
-
-        @mkdir($fullPath);
-
-        $stubFileContent = \File::get(__DIR__ . '/stubs/factory.stub');
-
-        $stubFileContent = str_replace(
-            ['{{ namespace }}', '{{ class }}', '{{ classNamespace }}'],
-            ['Database\\Factories\\' . $this->pluralName, $this->moduleName, $fullClassNamespace],
-            $stubFileContent
-        );
-        $filename = $filename ?? $this->moduleName . Str::ucfirst('factory') . '.php';
-        $this->disk->put($fullPath . '/' . $filename, $stubFileContent);
-    }
-
-    // public function createMigration()
+    // public function createSeeder()
     // {
-    //     $name = Str::snake($this->moduleName);
+    //     $directory = $this->fullPath . '/seeders';
+    //     @mkdir($directory);
 
-    //     $path = '/migrations/' . $this->getDatePrefix() .'_create_' . $name.'.php';
+    //     $path = $directory . '/' . $this->moduleName . 'Seeder.php';
 
-    //     @mkdir($this->fullPath . '/migrations');
     //     $this->createFile(
-    //         'migration.create',
-    //         ['{{ namespace }}', '{{ table }}'],
-    //         ['App\\' . $this->pluralName, Str::lower($this->pluralName)],
-    //         $this->fullPath . '/' . $path);
+    //         'seeder',
+    //         ['{{ class }}', '{{ namespace }}'],
+    //         [$this->moduleName, $this->pluralName],
+    //         $path);
     // }
-
-    // public function createModel($fillable='')
-    // {
-    //     $this->createFile(
-    //         'model',
-    //         ['{{ namespace }}', '{{ class }}', '{{ fillable }}'],
-    //         ['App\\' . $this->pluralName, $this->moduleName, $fillable],
-    //         $this->fullPath . '/' . $this->moduleName . '.php');
-    // }
-
-    public function createRepository()
-    {
-        $this->createFile('repository', ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],['App\\' . $this->pluralName, $this->moduleName . 'Repository', $this->moduleName, $this->moduleNameLower]);
-    }
-
-    public function createPolicy()
-    {
-        $this->createFile(
-            'policy',
-            ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelVariable }}'],
-            ['App\\' . $this->pluralName, $this->moduleName . 'Policy', $this->moduleName, Str::lower($this->moduleName)]);
-    }
-
-    public function createProvider()
-    {
-        $this->createFile(
-            'provider',
-            ['{{ namespace }}', '{{ class }}'],
-            ['App\\' . $this->pluralName, $this->moduleName . 'ServiceProvider'],
-            $this->fullPath . '/' . $this->moduleName . 'ServiceProvider.php');
-
-    }
-
-    public function createResource()
-    {
-        $this->createFile('resource', ['{{ namespace }}', '{{ class }}', '{{ modelVariable }}'],['App\\' . $this->pluralName, $this->moduleName . 'Resource', $this->moduleName]);
-        $this->createFile(
-            'resource-collection',
-            ['{{ namespace }}', '{{ class }}', '{{ modelVariable }}'],
-            ['App\\' . $this->pluralName, $this->moduleName . 'ResourceCollection', $this->moduleName],
-            $this->fullPath . '/' . $this->moduleName . 'ResourceCollection.php');
-    }
-
-    public function createSeeder()
-    {
-        $directory = $this->fullPath . '/seeders';
-        @mkdir($directory);
-
-        $path = $directory . '/' . $this->moduleName . 'Seeder.php';
-
-        $this->createFile(
-            'seeder',
-            ['{{ class }}', '{{ namespace }}'],
-            [$this->moduleName, $this->pluralName],
-            $path);
-    }
 
     function createVuejsModule()
     {

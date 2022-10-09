@@ -39,7 +39,9 @@ class {{ class }} extends Controller
      */
     public function show({{ model }} ${{ modelParam }})
     {
-        //
+        $this->authorize('view', ${{ modelParam }});
+
+        return new {{ model }}Resource(${{ modelParam }});
     }
 
     /**
@@ -65,6 +67,8 @@ class {{ class }} extends Controller
      */
     public function destroy({{ model }} ${{ modelParam }})
     {
-        //
+        $this->authorize('delete', ${{ modelParam }});
+
+        ${{ modelParam }}->delete();
     }
 }

@@ -1,9 +1,9 @@
 <?php
-namespace Laravue3\ModuleBuilder;
+namespace Laravue3\ModuleBuilder\Builders;
 
 use Illuminate\Support\Str;
 
-class ModelBuilder extends Builder
+class ModelBuilder extends \Laravue3\ModuleBuilder\Builder
 {
     public static function build($config)
     {
@@ -16,7 +16,7 @@ class ModelBuilder extends Builder
             $config);
     }
 
-   private static function buildFields($model)
+    protected static function buildFields($model)
    {
         $fillableString = 'protected $fillable = [';
         foreach($model['fields'] as $field) {
