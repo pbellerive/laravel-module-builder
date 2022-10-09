@@ -15,7 +15,14 @@ export default {
         return {
             {{ class }}: {}
         }
-    }
+    },
+    methods: {
+        fetch() {
+            axios.get('{{ plural }}/' + this.$router.currentRoute.params.id).then(response => {
+                this.monmodel = response.data.data;
+            });
+        }
+    },
 }
 </script>
 

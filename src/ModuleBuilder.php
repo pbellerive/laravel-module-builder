@@ -24,7 +24,6 @@ class ModuleBuilder extends Command
     protected $description = 'Create a new module and its related files';
 
     protected $moduleName;
-    protected $moduleNameLower;
     protected $pluralName;
     protected $fullpath;
     protected $disk;
@@ -48,7 +47,6 @@ class ModuleBuilder extends Command
     public function handle()
     {
         $this->moduleName = trim($this->argument('name'));
-        $this->moduleNameLower = Str::lower(trim($this->argument('name')));
         $this->pluralName = Str::plural($this->moduleName);
 
         $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
@@ -79,24 +77,10 @@ class ModuleBuilder extends Command
             print($this->option('json'));
             $helper->buildFromJson($this->option('json'));
         } else {
-            $helper->buildFromOptions($this->options());
+            $helper->buildFromOptions($this->options(), $this->moduleName);
             return 0;
         }
     }
-
-    // public function createFile($type, $needles, $replacements, $filename = null) {
-    //     $stubFileContent = \File::get(__DIR__ . '/stubs/'. $type .'.stub');
-
-    //     $stubFileContent = str_replace(
-    //         $needles,
-    //         $replacements,
-    //         $stubFileContent
-    //     );
-
-    //     $filename = $filename ?? $this->fullPath . '/' . $this->moduleName . Str::ucfirst($type) . '.php';
-    //     $this->disk->put($filename, $stubFileContent);
-    // }
-
 
     protected function getArguments()
     {

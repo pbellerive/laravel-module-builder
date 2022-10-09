@@ -11,6 +11,8 @@ use Laravue3\ModuleBuilder\Builders\MigrationBuilder;
 use Laravue3\ModuleBuilder\Builders\PolicyBuilder;
 use Laravue3\ModuleBuilder\Builders\ProviderBuilder;
 use Laravue3\ModuleBuilder\Builders\RepositoryBuilder;
+use Laravue3\ModuleBuilder\Builders\SeederBuilder;
+use Laravue3\ModuleBuilder\Builders\VuejsBuilder;
 
 class Helpers 
 {
@@ -29,15 +31,12 @@ class Helpers
     public function buildFromJson($jsonPath)
     {
         $jsonContent = file_get_contents($jsonPath);
-
-        print($jsonContent);
-
         $content = json_decode($jsonContent, true);
 
         foreach($content as $model) {
             $config = $this->getConfig($model);
 
-            $this->createSeeder();
+            SeederBuilder::build($config);
             ResourceBuilder::build($config);
             FactoryBuilder::build($config);
             PolicyBuilder::build($config);
@@ -46,47 +45,53 @@ class Helpers
             ProviderBuilder::build($config);            
             ModelBuilder::build($config);            
             MigrationBuilder::build($config);
+            VuejsBuilder::build($config);
         }
     }
 
     public function buildFromOptions($options) 
     {
-        var_dump($options);
+        $model = [
+            'name' => $this->moduleName
+        ];
+
+        $config = $this->getConfig($model);
+
         if (array_key_exists('controller', $options)) {
-            $this->createControllerApi();
+            ControllerBuilder::build($config);
         }
 
         if (array_key_exists('factory', $options)) {
-            $this->createFactory();
+            FactoryBuilder::build($config);
         }
 
         if (array_key_exists('migration', $options)) {
-            $this->createMigration();
+            MigrationBuilder::build($config);
         }
 
         if (array_key_exists('model', $options)) {
-            $this->createModel();
+            ModelBuilder::build($config); 
         }
 
         if (array_key_exists('policy', $options)) {
-            $this->createPolicy();
+            PolicyBuilder::build($config);
         }
 
         if (array_key_exists('repository', $options)) {
-            $this->createRepository();
+            RepositoryBuilder::build($config);
         }
 
         if (array_key_exists('resource', $options)) {
-            $this->createResource();
+            ResourceBuilder::build($config);
         }
 
 
         if (array_key_exists('seed', $options)) {
-            $this->createSeeder();
+            SeederBuilder::build($config);
         }
 
         if (array_key_exists('viewjs', $options)) {
-            $this->createVuejsModule();
+            VuejsBuilder::build($config);
         }
 
     }
@@ -112,39 +117,25 @@ class Helpers
         return $config;
     }
 
-    // public function createSeeder()
+    // function createVuejsModule()
     // {
-    //     $directory = $this->fullPath . '/seeders';
-    //     @mkdir($directory);
-
-    //     $path = $directory . '/' . $this->moduleName . 'Seeder.php';
+    //     $path = config('moduleBuilder.viewjs') . '/' . Str::lower($this->pluralName);
+    //     @mkdir($path);
 
     //     $this->createFile(
-    //         'seeder',
-    //         ['{{ class }}', '{{ namespace }}'],
-    //         [$this->moduleName, $this->pluralName],
-    //         $path);
+    //         'list',
+    //         ['{{ class }}'],
+    //         [Str::lower($this->moduleName)],
+    //         $path . '/list.vue'
+    //     );
+
+    //     $this->createFile(
+    //         'edit',
+    //         ['{{ class }}'],
+    //         [Str::lower($this->moduleName)],
+    //         $path . '/edit.vue'
+    //     );
     // }
-
-    function createVuejsModule()
-    {
-        $path = config('moduleBuilder.viewjs') . '/' . Str::lower($this->pluralName);
-        @mkdir($path);
-
-        $this->createFile(
-            'list',
-            ['{{ class }}'],
-            [Str::lower($this->moduleName)],
-            $path . '/list.vue'
-        );
-
-        $this->createFile(
-            'edit',
-            ['{{ class }}'],
-            [Str::lower($this->moduleName)],
-            $path . '/edit.vue'
-        );
-    }
 
     public function createFile($type, $needles, $replacements, $filename = null) {
         $stubFileContent = \File::get(__DIR__ . '/stubs/'. $type .'.stub');
@@ -158,10 +149,4 @@ class Helpers
         $filename = $filename ?? $this->fullPath . '/' . $this->moduleName . Str::ucfirst($type) . '.php';
         $this->disk->put($filename, $stubFileContent);
     }
-
-    protected function getDatePrefix()
-    {
-        return date('Y_m_d_His');
-    }
-    
 }

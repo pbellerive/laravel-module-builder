@@ -18,15 +18,19 @@ class ModelBuilder extends \Laravue3\ModuleBuilder\Builder
 
     protected static function buildFields($model)
    {
-        $fillableString = 'protected $fillable = [';
-        foreach($model['fields'] as $field) {
-            if (!array_key_exists('fillable', $field)  || $field['fillable']) {
-                $fillableString .= "'" . $field['name'] . "', ";
+        if (array_key_exists('fields', $model)) {
+            $fillableString = 'protected $fillable = [';
+            foreach($model['fields'] as $field) {
+                if (!array_key_exists('fillable', $field)  || $field['fillable']) {
+                    $fillableString .= "'" . $field['name'] . "', ";
+                }
             }
+
+            $fillableString .= '];';
+            return $fillableString;
         }
 
-        $fillableString .= '];';
-        return $fillableString;
+        return '';
    }
 
    private static function buildFieldString($field) 

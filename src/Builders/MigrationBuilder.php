@@ -26,13 +26,14 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
 
     protected static function buildFields($model)
    {
-        $content = "";
+          $content = "";
+          if (array_key_exists('fields', $model)) {
+               foreach($model['fields'] as $field) {
+                    $content .= call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field) . "\n";
+               }
+          }
 
-        foreach($model['fields'] as $field) {
-            $content .= call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field) . "\n";
-        }
-
-        return $content;
+          return $content;
    }
 
    private static function buildFieldString($field) 
