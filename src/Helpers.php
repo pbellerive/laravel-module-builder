@@ -18,13 +18,15 @@ class Helpers
 {
     public function __construct($name)
     {
+        $this->name = $name;
+
         $this->disk = \Storage::build(['driver' => 'local', 'root' => './']);
 
-        $this->moduleName = trim($name);
-        $this->moduleNameLower = Str::lower(trim($name));
-        $this->pluralName = Str::plural($this->moduleName);
+        // $this->moduleName = ucfirst(trim($name));
+        // $this->moduleNameLower = Str::lower(trim($name));
+        // $this->pluralName = Str::plural($this->moduleName);
 
-        $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
+        // $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
 
     }
 
@@ -51,11 +53,9 @@ class Helpers
 
     public function buildFromOptions($options) 
     {
-        $model = [
-            'name' => $this->moduleName
-        ];
-
-        $config = $this->getConfig($model);
+        $config = $this->getConfig([
+            'name' => $this->name
+        ]);
 
         if (array_key_exists('controller', $options)) {
             ControllerBuilder::build($config);
@@ -99,7 +99,7 @@ class Helpers
     public function getConfig($model) 
     {
         $name = trim($model['name']);
-        $this->moduleName = $name;
+        $this->moduleName = ucfirst($name);
         $this->moduleNameLower = Str::lower($name);
         $this->pluralName = Str::plural($this->moduleName);
         $this->fullPath = config('moduleBuilder.basePath') . '/' . $this->pluralName;
@@ -116,26 +116,6 @@ class Helpers
 
         return $config;
     }
-
-    // function createVuejsModule()
-    // {
-    //     $path = config('moduleBuilder.viewjs') . '/' . Str::lower($this->pluralName);
-    //     @mkdir($path);
-
-    //     $this->createFile(
-    //         'list',
-    //         ['{{ class }}'],
-    //         [Str::lower($this->moduleName)],
-    //         $path . '/list.vue'
-    //     );
-
-    //     $this->createFile(
-    //         'edit',
-    //         ['{{ class }}'],
-    //         [Str::lower($this->moduleName)],
-    //         $path . '/edit.vue'
-    //     );
-    // }
 
     public function createFile($type, $needles, $replacements, $filename = null) {
         $stubFileContent = \File::get(__DIR__ . '/stubs/'. $type .'.stub');
