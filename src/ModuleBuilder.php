@@ -53,6 +53,7 @@ class ModuleBuilder extends Command
 
         if (file_exists($this->fullPath) && !$this->option('force')) {
             $this->line('Folder already exists, are you fucking crazy ?');
+            $this->line('Doing nothing bye !');
             return;
         }
 

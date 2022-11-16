@@ -24,41 +24,32 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
         );
     }
 
+    private static function buildField($field) 
+   {
+     if (method_exists(__CLASS__, 'buildField' . ucfirst($field['type']))){
+          return call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field);
+     }
+
+     $strField = "\t\t\t\$table->". $field['type'] ."('" . $field['name'];
+     if (array_key_exists('params', $field)) {
+          $strField .= ',' . $field['params'];
+     }
+     
+     $strField .= "');";
+     return $strField;
+   }
+
     protected static function buildFields($model)
    {
           $content = "";
           if (array_key_exists('fields', $model)) {
                foreach($model['fields'] as $field) {
-                    $content .= call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field) . "\n";
+                    $content .= self::buildField($field) . "\n";
+                    // $content .= call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field) . "\n";
                }
           }
 
           return $content;
-   }
-
-   private static function buildFieldString($field) 
-   {
-        return  "\t\t\t\$table->string('" . $field['name'] . "');";
-   } 
-   
-   private static function buildFieldBigIncrements($field) 
-   {
-        return  "\t\t\t\$table->bigIncrements('" . $field['name'] . "');";
-   }
-   
-   private static function buildFieldBigInteger($field) 
-   {
-        return  "\t\t\t\$table->bigInteger('" . $field['name'] . "');";
-   } 
-
-   private static function buildFieldBinary($field) 
-   {
-        return  "\t\t\t\$table->binary('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldBoolean($field) 
-   {
-        return  "\t\t\t\$table->boolean('" . $field['name'] . "');";
    }
 
    private static function buildFieldChar($field) 
@@ -69,55 +60,5 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
         }
         $str .= "');";
         return $str;
-   }
-
-   private static function buildFieldDateTimeTz($field) 
-   {
-        return  "\t\t\t\$table->dateTimeTz('" . $field['name'] . "');";
-   } 
-   
-   private static function buildFieldDateTime($field) 
-   {
-        return  "\t\t\t\$table->dateTime('" . $field['name'] . "');";
-   } 
-   
-   private static function buildFieldDate($field) 
-   {
-        return  "\t\t\t\$table->date('" . $field['name'] . "');";
-   }
-   
-   private static function buildFieldDecimal($field) 
-   {
-        return  "\t\t\t\$table->decimal('" . $field['name'] . "');";
-   }  
-
-   private static function buildFieldDouble($field) 
-   {
-        return  "\t\t\t\$table->double('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldFloat($field) 
-   {
-        return  "\t\t\t\$table->float('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldForeignId($field) 
-   {
-        return  "\t\t\t\$table->foreignId('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldId($field) 
-   {
-        return  "\t\t\t\$table->id('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldInteger($field) 
-   {
-        return  "\t\t\t\$table->integer('" . $field['name'] . "');";
-   }
-
-   private static function buildFieldText($field) 
-   {
-        return  "\t\t\t\$table->text('" . $field['name'] . "');";
    }
 } 
