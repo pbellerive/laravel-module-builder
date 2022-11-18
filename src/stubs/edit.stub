@@ -1,6 +1,8 @@
 <template>
     <div>
-
+        <div v-for="attribute in {{ class }}" :key="{{ class }}[attribute]">
+            <input type="text" v-model="{{ class }}[attribute]"> 
+        </div>
     </div>
 </template>
 

@@ -7,37 +7,37 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
 {
     public static function build($config)
     {
-        $name = Str::snake($config['moduleName']);
+          $name = Str::snake($config['moduleName']);
 
-        $path = '/migrations/' . self::getDatePrefix() .'_create_' . $name.'.php';
+          $path = '/migrations/' . self::getDatePrefix() .'_create_' . $name.'.php';
 
-        @mkdir($config['fullPath'] . '/migrations');
+          @mkdir($config['fullPath'] . '/migrations');
 
-        $up = self::buildFields($config['model']);
+          $up = self::buildFields($config['model']);
 
-        self::createFile(
-            'migration.create',
-            ['{{ namespace }}', '{{ table }}', '{{ up }}'],
-            ['App\\' . $config['pluralName'], Str::lower($config['pluralName']), $up],
-            $config['fullPath'] . '/' . $path,
-            $config
-        );
+          self::createFile(
+               'migration.create',
+               ['{{ namespace }}', '{{ table }}', '{{ up }}'],
+               ['App\\' . $config['pluralName'], Str::lower($config['pluralName']), $up],
+               $config['fullPath'] . '/' . $path,
+               $config
+          );
     }
 
-    private static function buildField($field) 
-   {
-     if (method_exists(__CLASS__, 'buildField' . ucfirst($field['type']))){
-          return call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field);
-     }
+     private static function buildField($field) 
+     {
+          if (method_exists(__CLASS__, 'buildField' . ucfirst($field['type']))){
+               return call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field);
+          }
 
-     $strField = "\t\t\t\$table->". $field['type'] ."('" . $field['name'];
-     if (array_key_exists('params', $field)) {
-          $strField .= ',' . $field['params'];
+          $strField = "\t\t\t\$table->". $field['type'] ."('" . $field['name'];
+          if (array_key_exists('params', $field)) {
+               $strField .= ',' . $field['params'];
+          }
+          
+          $strField .= "');";
+          return $strField;
      }
-     
-     $strField .= "');";
-     return $strField;
-   }
 
     protected static function buildFields($model)
    {
@@ -45,7 +45,6 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
           if (array_key_exists('fields', $model)) {
                foreach($model['fields'] as $field) {
                     $content .= self::buildField($field) . "\n";
-                    // $content .= call_user_func( 'Laravue3\ModuleBuilder\Builders\MigrationBuilder::' . 'buildField' . ucfirst($field['type']), $field) . "\n";
                }
           }
 
