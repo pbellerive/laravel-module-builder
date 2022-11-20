@@ -75,12 +75,15 @@ class ModuleBuilder extends Command
         $helper = new Helpers(trim($this->argument('name')));
 
         if ($this->option('json')) {
-            print($this->option('json'));
+            print("Building module from JSON file\n");
             $helper->buildFromJson($this->option('json'));
         } else {
+            print("Building module from command line options\n");
             $helper->buildFromOptions($this->options(), $this->moduleName);
-            return 0;
         }
+
+        print("Module created\n");
+        return 0;
     }
 
     protected function getArguments()
