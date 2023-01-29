@@ -12,6 +12,7 @@ class ResourceBuilder extends \Laravue3\ModuleBuilder\Builder
             'resource', 
             ['{{ namespace }}', '{{ class }}', '{{ modelVariable }}'],
             ['App\\' . $config['pluralName'], $config['moduleName'] . 'Resource', $config['moduleName']], 
+            $config['fullPath'] . '/' . $config['moduleName'] . 'Resource.php',
             config:$config);
 
         self::createFile(
