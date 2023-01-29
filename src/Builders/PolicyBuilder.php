@@ -12,6 +12,7 @@ class PolicyBuilder extends \Laravue3\ModuleBuilder\Builder
             'policy',
             ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelVariable }}'],
             ['App\\' . $config['pluralName'], $config['moduleName'] . 'Policy', $config['moduleName'], Str::lower($config['moduleName'])],
+            null,
             config:$config);
     }
 

@@ -12,6 +12,7 @@ class RepositoryBuilder extends \Laravue3\ModuleBuilder\Builder
             'repository', 
             ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],
             ['App\\' . $config['pluralName'], $config['moduleName'] . 'Repository', $config['moduleName'], $config['moduleNameLower']], 
+            null,
             config:$config);
     }
 

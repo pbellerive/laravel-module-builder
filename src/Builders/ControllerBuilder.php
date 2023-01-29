@@ -11,8 +11,8 @@ class ControllerBuilder extends \Laravue3\ModuleBuilder\Builder
        self::createFile(
         'controller',
         ['{{ namespace }}', '{{ class }}', '{{ model }}', '{{ modelParam }}'],
-        ['App\\' . $config['pluralName'], 
-        $config['moduleName'] . 'Controller', $config['moduleName'], $config['moduleNameLower']], 
+        ['App\\' . $config['pluralName'], $config['moduleName'] . 'Controller', $config['moduleName'], $config['moduleNameLower']], 
+        null,
         config:$config);
     }
 
