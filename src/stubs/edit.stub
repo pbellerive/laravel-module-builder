@@ -1,31 +1,22 @@
 <template>
     <div>
         <div v-for="attribute in {{ class }}" :key="{{ class }}[attribute]">
-            <input type="text" v-model="{{ class }}[attribute]"> 
+            <input type="text" v-model="{{ class }}[attribute]">
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    setup () {
+<script setup>
+import  { ref } from 'vue';
 
+const {{ class }} = ref({})
 
-        return {}
-    },
-    data() {
-        return {
-            {{ class }}: {}
-        }
-    },
-    methods: {
-        fetch() {
-            axios.get('{{ plural }}/' + this.$router.currentRoute.params.id).then(response => {
-                this.monmodel = response.data.data;
-            });
-        }
-    },
-}
+fetch = () => {
+    axios.get('{{ plural }}/' + this.$router.currentRoute.params.id).then(response => {
+        this.monmodel = response.data.data;
+    });
+};
+
 </script>
 
 <style lang="scss" scoped>

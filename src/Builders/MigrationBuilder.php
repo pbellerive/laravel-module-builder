@@ -1,13 +1,12 @@
 <?php
+
 namespace Laravue3\ModuleBuilder\Builders;
 
 use Exception;
 use Illuminate\Support\Str;
 
 class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
-
 {
-
     public static function build($config)
     {
         $name = Str::snake($config['moduleName']);
@@ -84,7 +83,7 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
     {
         $str = "\t\t\t\$table->char('" . $field['name'];
         if (array_key_exists('length', $field)) {
-            $str .= ',' . $field['length'];
+            $str .= '\',' . $field['length'];
         }
         $str .= "');";
         return $str;
@@ -155,17 +154,17 @@ class MigrationBuilder extends \Laravue3\ModuleBuilder\Builder
     {
         return self::buildFieldWithPrecisionAndScale($field);
     }
-    
+
     private static function buildFieldTimestampTz($field)
     {
         return self::buildFieldWithPrecisionAndScale($field);
     }
-    
+
     private static function buildFieldTimestamp($field)
     {
         return self::buildFieldWithPrecisionAndScale($field);
     }
-    
+
     private static function buildFieldTimestampsTz($field)
     {
         return self::buildFieldWithPrecisionAndScale($field);

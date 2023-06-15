@@ -6,17 +6,11 @@
     </div>
 </template>
 
-<script>
-export default {
-    setup () {
-        return {}
-    },
-    data() {
-        return {
-            {{ class }}: []
-        }
-    }
-}
+<script setup>
+import { ref } from 'vue';
+
+{{ class }} = ref([]);
+
 </script>
 
 <style lang="scss" scoped>
