@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class {{ class }} extends Controller
 {
+    protected ${{ modelParam }}Repository;
+
+    public function __construct({{ model }}Repository ${{ modelParam }}Repository)
+    {
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,7 @@ class {{ class }} extends Controller
      */
     public function index()
     {
-         return new {{ model }}ResourceCollection($this->{{ model }}Repository->get());
+         return new {{ model }}ResourceCollection($this->{{ modelParam }}Repository->get());
     }
 
     /**
@@ -28,7 +34,7 @@ class {{ class }} extends Controller
         $this->authorize('create', {{ model }}::class);
 
         $params = $request->all();
-        $this->{{ model }}Repository->create($params);
+        $this->{{ modelParam }}Repository->create($params);
     }
 
     /**
@@ -56,7 +62,7 @@ class {{ class }} extends Controller
         $this->authorize('update', ${{ modelParam }});
 
         $params = $request->all();
-        $this->{{ model }}Repository->create($params);
+        $this->{{ modelParam }}Repository->update($params);
     }
 
     /**

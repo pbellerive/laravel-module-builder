@@ -8,11 +8,13 @@
 
 <script setup>
 import  { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const {{ class }} = ref({})
 
 fetch = () => {
-    axios.get('{{ plural }}/' + this.$router.currentRoute.params.id).then(response => {
+    axios.get('{{ plural }}/' + route.params.id).then(response => {
         this.monmodel = response.data.data;
     });
 };

@@ -9,7 +9,7 @@
 <script setup>
 import { ref } from 'vue';
 
-{{ class }} = ref([]);
+const {{ class }} = ref([]);
 
 </script>
 
